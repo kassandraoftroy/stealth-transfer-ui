@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Link from "next/link";
 import { Address, Chain, createPublicClient, createWalletClient, http, isAddress, parseUnits } from "viem";
 import { mainnet, sepolia } from "viem/chains";
 import { useAccount, useEnsAddress, useWriteContract } from "wagmi";
@@ -748,9 +749,14 @@ export const StealthTransfer = () => {
     return null;
   }, [showCustomTokenInput, customTokenAddress, isLoadingToken, tokenError, selectedToken]);
 
+  // Create a ref to the dropdown element so we can close it
+  const tokenDropdownRef = useRef<HTMLUListElement>(null);
+  
   // Handle token selection from dropdown
   const handleTokenSelect = useCallback((token: TokenInfo) => {
+    // Update token selection state
     setSelectedToken(token);
+    
     // Store the token input with network prefix (or NATIVE for ETH)
     if (token.address === "NATIVE") {
       setTokenInput("NATIVE");
@@ -764,6 +770,17 @@ export const StealthTransfer = () => {
     setValueError(null);
     setShowCustomTokenInput(false);
     setCustomTokenAddress("");
+    
+    // Programmatically close the dropdown by removing focus from the dropdown menu
+    // This is how we handle closing the dropdown in DaisyUI
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    
+    // For extra measure, we can also try to remove focus from the dropdown element directly
+    if (tokenDropdownRef.current) {
+      tokenDropdownRef.current.blur();
+    }
   }, [parsedReceiver.networkPrefix]);
   
   // Process and validate the value input
@@ -1026,6 +1043,15 @@ export const StealthTransfer = () => {
     setSelectedToken(null);
     setShowCustomTokenInput(true);
     setCustomTokenAddress("");
+    
+    // Close the dropdown
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    
+    if (tokenDropdownRef.current) {
+      tokenDropdownRef.current.blur();
+    }
   }, []);
   
   const handleTransfer = useCallback(async () => {
@@ -1344,7 +1370,7 @@ export const StealthTransfer = () => {
                   <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </label>
-              <ul tabIndex={0} className="dropdown-content menu p-2 shadow dark:bg-black bg-white dark:border-white border-gray-300 border rounded-box w-full z-10 max-h-96 overflow-y-auto">
+              <ul ref={tokenDropdownRef} tabIndex={0} className="dropdown-content menu p-2 shadow dark:bg-black bg-white dark:border-white border-gray-300 border rounded-box w-full z-10 max-h-96 overflow-y-auto">
                 <li>
                   <a onClick={handleCustomTokenOption} className="dark:text-white text-black font-mono dark:hover:bg-zinc-800 hover:bg-gray-200 transition-colors duration-200">
                     <span>Custom Token</span>
@@ -1541,7 +1567,7 @@ export const StealthTransfer = () => {
           Transfer tokens to a target recipient <i>identity</i>, but funds arrive to an <i>anonymous address</i> that keeps the recipient identity private to onchain observers.
         </p>
         <p>
-          Only works for Registered recipients (see Register page)
+          Only works for Registered recipients (see <Link href="/register" className="underline hover:text-primary">Register</Link> page)
         </p>
       </div>
     </div>
