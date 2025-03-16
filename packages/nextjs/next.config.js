@@ -2,6 +2,11 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export', // Enables static export
+  trailingSlash: true, // Ensures proper linking
+  images: {
+    unoptimized: true, // Required since IPFS doesn't support Next.js image optimizations
+  },
   reactStrictMode: true,
   typescript: {
     ignoreBuildErrors: process.env.NEXT_PUBLIC_IGNORE_BUILD_ERROR === "true",
