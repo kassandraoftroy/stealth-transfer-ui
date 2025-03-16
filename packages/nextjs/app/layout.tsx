@@ -8,7 +8,11 @@ export const metadata = getMetadata({
   title: "Stealth Transfer",
   description: "Stealth Transfer for Ethereum - Send tokens privately",
   icons: {
-    icon: '/favicon-eth.png',
+    icon: [{ 
+      url: "favicon-eth.png", 
+      sizes: "32x32", 
+      type: "image/png" 
+    }],
   },
 });
 

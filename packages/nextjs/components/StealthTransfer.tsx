@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import Link from "next/link";
+import { useAppContext } from "~~/contexts/AppContext";
 import { Address, Chain, createPublicClient, createWalletClient, http, isAddress, parseUnits } from "viem";
 import { mainnet, sepolia } from "viem/chains";
 import { useAccount, useEnsAddress, useWriteContract } from "wagmi";
@@ -154,6 +154,7 @@ const STEALTHEREUM_ABI = [
 ] as const;
 
 export const StealthTransfer = () => {
+  const { setActiveView } = useAppContext();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { targetNetwork } = useTargetNetwork();
   const { address: connectedAddress, isConnected } = useAccount();
@@ -1567,7 +1568,7 @@ export const StealthTransfer = () => {
           Transfer tokens to a target recipient <i>identity</i>, but funds arrive to an <i>anonymous address</i> that keeps the recipient identity private to onchain observers.
         </p>
         <p>
-          Only works for Registered recipients (see <Link href="/register" className="underline hover:text-primary">Register</Link> page)
+          Only works for Registered recipients (see <button onClick={() => setActiveView("register")} className="underline hover:text-primary cursor-pointer">Register</button> page)
         </p>
       </div>
     </div>
