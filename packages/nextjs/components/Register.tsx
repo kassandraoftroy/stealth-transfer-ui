@@ -36,7 +36,7 @@ export const Register = () => {
   
   // Stealth Meta Address input state
   const [stealthMetaAddressInput, setStealthMetaAddressInput] = useState<string>("");
-  const [metaAddressError, setMetaAddressError] = useState<string | null>(null);
+  // const [metaAddressError, setMetaAddressError] = useState<string | null>(null);
   
   // Transaction state
   const [isRegistering, setIsRegistering] = useState<boolean>(false);
@@ -170,7 +170,6 @@ export const Register = () => {
   // Handle restart after successful registration
   const handleRestart = useCallback(() => {
     setStealthMetaAddressInput("");
-    setMetaAddressError(null);
     setIsRegistered(false);
     setRegistrationError(null);
   }, []);
@@ -197,7 +196,6 @@ export const Register = () => {
             value={stealthMetaAddressInput}
             onChange={e => {
               setStealthMetaAddressInput(e.target.value);
-              setMetaAddressError(null);
             }}
           />
           {stealthMetaAddressInput && isValidMetaAddressInput && (

@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useAppContext } from "~~/contexts/AppContext";
-import { Address, Chain, createPublicClient, createWalletClient, http, isAddress, parseUnits } from "viem";
+import { Address, Chain, createPublicClient, http, isAddress, parseUnits } from "viem";
 import { mainnet, sepolia } from "viem/chains";
 import { useAccount, useEnsAddress, useWriteContract } from "wagmi";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth";
@@ -625,6 +625,14 @@ export const StealthTransfer = () => {
     if (customTokenAddress.trim() === '') {
       setIsLoadingToken(false);
       lastProcessedTokenInputRef.current = ""; // Reset last processed input
+      
+      // Reset transaction states on empty input
+      setIsTransfered(false);
+      setIsTransferring(false);
+      setIsApproved(false);
+      setIsApproving(false);
+      setTransferError(null);
+      setApprovalError(null);
       return;
     }
     
@@ -653,6 +661,21 @@ export const StealthTransfer = () => {
     // Parse input to check if it's valid
     const parsed = parseAddressInput(fullTokenInput);
     const isValid = parsed.isValid && parsed.networkPrefix !== null;
+    
+    // Reset transaction states when token changes
+    if (lastProcessedTokenInputRef.current !== fullTokenInput) {
+      setIsTransfered(false);
+      setIsTransferring(false);
+      setIsApproved(false);
+      setIsApproving(false);
+      setTransferError(null);
+      setApprovalError(null);
+      
+      // Also reset input values
+      setValueInput("");
+      setProcessedValue(null);
+      setValueError(null);
+    }
     
     // Only proceed with valid inputs that we haven't processed yet
     if (isValid && !isProcessingTokenRef.current && lastProcessedTokenInputRef.current !== fullTokenInput) {
@@ -771,6 +794,14 @@ export const StealthTransfer = () => {
     setValueError(null);
     setShowCustomTokenInput(false);
     setCustomTokenAddress("");
+    
+    // Reset transaction states when token changes
+    setIsTransfered(false);
+    setIsTransferring(false);
+    setIsApproved(false);
+    setIsApproving(false);
+    setTransferError(null);
+    setApprovalError(null);
     
     // Programmatically close the dropdown by removing focus from the dropdown menu
     // This is how we handle closing the dropdown in DaisyUI
@@ -1044,6 +1075,19 @@ export const StealthTransfer = () => {
     setSelectedToken(null);
     setShowCustomTokenInput(true);
     setCustomTokenAddress("");
+    
+    // Reset all transaction states
+    setIsTransfered(false);
+    setIsTransferring(false);
+    setIsApproved(false);
+    setIsApproving(false);
+    setTransferError(null);
+    setApprovalError(null);
+    
+    // Reset value inputs
+    setValueInput("");
+    setProcessedValue(null);
+    setValueError(null);
     
     // Close the dropdown
     if (document.activeElement instanceof HTMLElement) {
